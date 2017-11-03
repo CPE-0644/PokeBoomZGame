@@ -23,11 +23,11 @@ namespace PokeBoomz
 
         public int scaleSize = 10, turnRound;
         public float allCP;
-        public bool isThrown = false , lose = false;
+        public bool isThrown = false, lose = false;
         public double positionX = 0, positionY = 0;
         public float angle = 45, power;
         public Vector2 position, infoPosition, arrowPosition;
-        private Texture2D texture,walkTexture,throwTexture, loseTexture, arrow, animation;
+        private Texture2D texture, walkTexture, throwTexture, loseTexture, arrow, animation;
         public bool turnLeft, turnRight, startTurn = true, myTurn;
 
         private float alpha = 1.0f;
@@ -45,10 +45,11 @@ namespace PokeBoomz
         private const float degtorad = (float) Math.PI / 180;
 
         public List<Pokeball> Pokeballs = new List<Pokeball>(3);
-        public List<Pokemon> OwnPokemons = new List<Pokemon>(6);
-        public LinkedList<Item> Items = new LinkedList<Item>();
 
-        public Item item1, item2, item3;
+        public List<Pokemon> OwnPokemons = new List<Pokemon>(6);
+//        public LinkedList<Item> Items = new LinkedList<Item>();
+
+//        public Item item1, item2, item3;
 
         public Pokeball pokeball1, pokeball2, pokeball3;
 
@@ -59,7 +60,7 @@ namespace PokeBoomz
         }
 
         public void LoadContent(ContentManager Content, String imag, String walkImag,
-            String throwImag, String loseImag,  int rows, int columns)
+            String throwImag, String loseImag, int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
@@ -69,7 +70,6 @@ namespace PokeBoomz
             walkTexture = Content.Load<Texture2D>(walkImag);
             throwTexture = Content.Load<Texture2D>(throwImag);
             loseTexture = Content.Load<Texture2D>(loseImag);
-
 
 
             arrow = Content.Load<Texture2D>("arrow");
@@ -93,16 +93,16 @@ namespace PokeBoomz
             Pokeballs.Add(pokeball2);
             Pokeballs.Add(pokeball3);
 
-            item1 = new Item(graphicsDevice, spriteBatch);
-            item2 = new Item(graphicsDevice, spriteBatch);
-            item3 = new Item(graphicsDevice, spriteBatch);
-            item1.LoadContent(Content, "item/change_wind", 100, 1000);
-            item2.LoadContent(Content, "item/freeze", 210, 1000);
-            item3.LoadContent(Content, "item/double_size", 320, 1000);
-
-            Items.AddLast(item1);
-            Items.AddLast(item2);
-            Items.AddLast(item3);
+//            item1 = new Item(graphicsDevice, spriteBatch);
+//            item2 = new Item(graphicsDevice, spriteBatch);
+//            item3 = new Item(graphicsDevice, spriteBatch);
+//            item1.LoadContent(Content, "item/change_wind", 100, 1000);
+//            item2.LoadContent(Content, "item/freeze", 210, 1000);
+//            item3.LoadContent(Content, "item/double_size", 320, 1000);
+//
+//            Items.AddLast(item1);
+//            Items.AddLast(item2);
+//            Items.AddLast(item3);
 
             remainedPokeball = Pokeballs.Count();
         }
@@ -119,17 +119,17 @@ namespace PokeBoomz
                 currentFrame = 0;
             keyboardState = Keyboard.GetState();
 
-            infoPosition = new Vector2((float)positionX + 20, (float)positionY - 10);
+            infoPosition = new Vector2((float) positionX + 20, (float) positionY - 10);
 
             animation = texture;
-            
+            if (remainedPokeball > 0)
+                Pokeballs[pokeballToUse].Update(isThrown, pokeballRotation, angle, power, turnLeft);
             if (myTurn)
             {
                 PlayerMoving();
 
                 if (remainedPokeball > 0)
                 {
-                    Pokeballs[pokeballToUse].Update(isThrown, pokeballRotation, angle, power, turnLeft);
                     if (!isThrown)
                     {
                         AngleMoving();
@@ -143,13 +143,17 @@ namespace PokeBoomz
                 }
                 else resetTurn();
 
-                foreach (var item in Items)
-                {
-                    item.Update();
-                }
-
-                powerRectangle.Update();
+//                foreach (var item in Items)
+//                {
+//                    item.Update();
+//                }
             }
+            else
+            {
+                power = 0;
+                powerRectangle.powerGage.X = 0;
+            }
+            powerRectangle.Update();
             if (lose)
             {
                 animation = loseTexture;
@@ -181,12 +185,12 @@ namespace PokeBoomz
         {
             Pokeballs[pokeballToUse].position.X = (float) this.positionX + 10;
             Pokeballs[pokeballToUse].position.Y = (float) this.positionY + texture.Height / 2;
-            arrowPosition.X = Pokeballs[pokeballToUse].position.X - Pokeballs[pokeballToUse].drawRec.Width/3
-                + (angle * pokeballRotation)/5;
+            arrowPosition.X = Pokeballs[pokeballToUse].position.X - Pokeballs[pokeballToUse].drawRec.Width / 3
+                              + (angle * pokeballRotation) / 5;
             arrowPosition.Y = Pokeballs[pokeballToUse].position.Y - pokeballRotation * 20;
             if (turnRight)
             {
-                Pokeballs[pokeballToUse].position.X = (float) this.positionX + texture.Width/3 + scaleSize - 10;
+                Pokeballs[pokeballToUse].position.X = (float) this.positionX + texture.Width / 3 + scaleSize - 10;
                 arrowPosition.X = Pokeballs[pokeballToUse].position.X + Pokeballs[pokeballToUse].drawRec.Width / 3
                                   + (angle * pokeballRotation) / 5;
                 arrowPosition.Y = Pokeballs[pokeballToUse].position.Y + (pokeballRotation) * 20;
@@ -206,7 +210,6 @@ namespace PokeBoomz
             if (keyboardState.IsKeyUp(Keys.Space) && power != 0)
             {
                 isThrown = true;
-                //                Console.WriteLine("POWERING!!");
             }
         }
 
@@ -248,7 +251,8 @@ namespace PokeBoomz
             {
                 angle += 1;
                 if (turnLeft)
-                {arrowRotation = angle * degtorad;
+                {
+                    arrowRotation = angle * degtorad;
                     pokeballRotation = angle * degtorad;
                 }
                 else if (turnRight)
@@ -266,13 +270,11 @@ namespace PokeBoomz
                 {
                     arrowRotation = angle * degtorad;
                     pokeballRotation = angle * degtorad;
-
                 }
                 else if (turnRight)
                 {
                     arrowRotation = -angle * degtorad;
                     pokeballRotation = -angle * degtorad;
-
                 }
 //                Console.WriteLine(angle);
                 if (angle <= 0) angle = 0;
@@ -290,12 +292,12 @@ namespace PokeBoomz
 
             if (myTurn)
             {
-               foreach (var item in Items)
-            {
-                item.Draw();
-            } 
+//               foreach (var item in Items)
+//            {
+//                item.Draw();
+//            } 
             }
-            
+
 
             sourceRectangle = new Rectangle(width * column, height * row, width, height);
             destinationRectangle =
@@ -304,14 +306,15 @@ namespace PokeBoomz
             if (remainedPokeball > 0)
             {
                 spriteBatch.Draw(arrow, arrowPosition, arrowRectangle, Color.White * alpha, arrowRotation,
-                arrowOrigin, arrowScale, spriteEffect, zDepth);
+                    arrowOrigin, arrowScale, spriteEffect, zDepth);
+                Pokeballs[pokeballToUse].Draw();
             }
-            
-            
+
+
             spriteBatch.Draw(animation, destinationRectangle, sourceRectangle, Color.White,
                 rotation, origin, spriteEffect, zDepth);
             //            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
-            
+
             powerRectangle.Draw();
         }
     }

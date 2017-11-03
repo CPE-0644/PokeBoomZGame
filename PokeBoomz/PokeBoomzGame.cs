@@ -22,7 +22,7 @@ namespace PokeBoomz
 
         public static double gravity = 0.5f;
         private int player_role = 1;
-        public int millisec = 0, sec = 0, turnTimeLimit = 10;
+        public int millisec = 0, sec = 0, turnTimeLimit = 15;
         public bool timesUp = false;
         public static float windPower;
         public float windDirection;
@@ -236,6 +236,7 @@ namespace PokeBoomz
                 }
                 if (thisPlayer.myTurn && thisPlayer.remainedPokeball == 0)
                 {
+                    swapPlayer();
                 }
                 player.Value.Update();
 
