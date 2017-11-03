@@ -21,13 +21,13 @@ namespace PokeBoomz
         private int currentFrame, frameCounter;
         private int totalFrames;
 
-        private int scaleSize = 50;
-
-        public bool isThrown = false;
+        public int scaleSize = 10, turnRound;
+        public float allCP;
+        public bool isThrown = false , lose = false;
         public double positionX = 0, positionY = 0;
         public float angle = 45, power;
         public Vector2 position, infoPosition, arrowPosition;
-        private Texture2D texture, arrow;
+        private Texture2D texture,walkTexture,throwTexture, loseTexture, arrow, animation;
         public bool turnLeft, turnRight, startTurn = true, myTurn;
 
         private float alpha = 1.0f;
@@ -58,13 +58,19 @@ namespace PokeBoomz
             this.spriteBatch = spriteBatch;
         }
 
-        public void LoadContent(ContentManager Content, String imag, int rows, int columns)
+        public void LoadContent(ContentManager Content, String imag, String walkImag,
+            String throwImag, String loseImag,  int rows, int columns)
         {
             Rows = rows;
             Columns = columns;
             currentFrame = 0;
             totalFrames = Rows * Columns;
             texture = Content.Load<Texture2D>(imag);
+            walkTexture = Content.Load<Texture2D>(walkImag);
+            throwTexture = Content.Load<Texture2D>(throwImag);
+            loseTexture = Content.Load<Texture2D>(loseImag);
+
+
 
             arrow = Content.Load<Texture2D>("arrow");
             arrowRectangle = new Rectangle(0, 0, arrow.Width, arrow.Height);
@@ -113,9 +119,10 @@ namespace PokeBoomz
                 currentFrame = 0;
             keyboardState = Keyboard.GetState();
 
-            infoPosition = new Vector2((float)positionX , (float)positionY - 10);
-            
+            infoPosition = new Vector2((float)positionX + 20, (float)positionY - 10);
 
+            animation = texture;
+            
             if (myTurn)
             {
                 PlayerMoving();
@@ -142,6 +149,11 @@ namespace PokeBoomz
                 }
 
                 powerRectangle.Update();
+            }
+            if (lose)
+            {
+                animation = loseTexture;
+                positionY += 30;
             }
         }
 
@@ -194,8 +206,7 @@ namespace PokeBoomz
             if (keyboardState.IsKeyUp(Keys.Space) && power != 0)
             {
                 isThrown = true;
-                
-//                Console.WriteLine("POWERING!!");
+                //                Console.WriteLine("POWERING!!");
             }
         }
 
@@ -209,6 +220,7 @@ namespace PokeBoomz
                 spriteEffect = SpriteEffects.None;
                 arrowRotation = angle * degtorad;
                 pokeballRotation = angle * degtorad;
+                animation = walkTexture;
             }
             if (keyboardState.IsKeyDown(Keys.Right))
             {
@@ -218,6 +230,7 @@ namespace PokeBoomz
                 spriteEffect = SpriteEffects.FlipHorizontally;
                 arrowRotation = -angle * degtorad;
                 pokeballRotation = -angle * degtorad;
+                animation = walkTexture;
             }
             if (this.positionX < 0)
             {
@@ -295,7 +308,7 @@ namespace PokeBoomz
             }
             
             
-            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White,
+            spriteBatch.Draw(animation, destinationRectangle, sourceRectangle, Color.White,
                 rotation, origin, spriteEffect, zDepth);
             //            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
             

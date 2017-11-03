@@ -22,7 +22,7 @@ namespace PokeBoomz
 
         public static double gravity = 0.5f;
         private int player_role = 1;
-        public int millisec = 0, sec = 0, turnTimeLimit = 15;
+        public int millisec = 0, sec = 0, turnTimeLimit = 10;
         public bool timesUp = false;
         public static float windPower;
         public float windDirection;
@@ -37,7 +37,12 @@ namespace PokeBoomz
         private Vector2 origin = new Vector2(0, 0),
             timerPosition = new Vector2(1200, 1100),
             anglePosition = new Vector2(700, 1100),
-            windPosition = new Vector2(100, 500);
+            windPosition = new Vector2(100, 500),
+            turnPosition = new Vector2(500, 200);
+
+        public Texture2D card1, card2;
+        public Vector2 card1Position = new Vector2(10, 10), card2Position = new Vector2(10, 250);
+        public float p1Trans, p2Trans;
 
         private float scale = 2.0f, textScale = 0.8f, timerScale = 2.0f;
         private SpriteEffects spriteEffect, textEffects;
@@ -63,9 +68,8 @@ namespace PokeBoomz
         {
             base.Initialize();
             IsMouseVisible = true;
-//            displayWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-//            displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-
+            //            displayWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            //            displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             displayWidth = 1600;
             displayHeight = 1200;
             graphics.PreferredBackBufferWidth = displayWidth;
@@ -91,6 +95,9 @@ namespace PokeBoomz
             block1 = new Obstacle(graphics, spriteBatch);
             block1.LoadContent(Content, "map/block01", 100, 100);
 
+            card1 = Content.Load<Texture2D>("player_card1");
+            card2 = Content.Load<Texture2D>("player_card2");
+
             //  Obstacles.AddLast(block1);
 
             pokemon1 = new Pokemon(graphics, spriteBatch);
@@ -114,13 +121,21 @@ namespace PokeBoomz
             pokemon5.LoadContent(Content, "pokemon/monkey_22", 22, 1);
 
             player1 = new Player(graphics, spriteBatch);
-            player1.LoadContent(Content, "character/male/stand", 1, 3);
+            player1.LoadContent(Content, "character/female/stand", 
+                "character/female/walk", "character/female/throw",
+                "character/female/lose",1, 3);
 
             player2 = new Player(graphics, spriteBatch);
-            player2.LoadContent(Content, "character/female/stand", 1, 3);
+            player2.LoadContent(Content, "character/male/stand", 
+                "character/male/walk", "character/male/throw", 
+                "character/male/lose", 1, 3);
 
             player1.myTurn = true;
             player_role = 1;
+            p1Trans = 0.8f;
+            p2Trans = 0.4f;
+            player1.turnRound = 1;
+            player2.turnRound = 0;
 
             Players.Add(1, player1);
             Players.Add(2, player2);
@@ -132,7 +147,7 @@ namespace PokeBoomz
             Pokemons.AddLast(pokemon5);
 
 
-            if (Math.Floor( rand.NextDouble() * 2 ) == 0) windDirection = -1;
+            if (Math.Floor(rand.NextDouble() * 2) == 0) windDirection = -1;
             else windDirection = 1;
             windPower = windDirection * (float) Math.Floor(rand.NextDouble() * 5.0f);
         }
@@ -143,23 +158,29 @@ namespace PokeBoomz
 
         public void swapPlayer()
         {
-            if (player_role == 1)
+            if (player_role == 1 && player2.remainedPokeball > 0)
             {
                 player1.myTurn = false;
                 player2.myTurn = true;
                 player_role = 2;
+                p1Trans = 0.4f;
+                p2Trans = 0.8f;
+                player2.turnRound++;
             }
-            else if (player_role == 2)
+            else if (player_role == 2 && player1.remainedPokeball > 0)
             {
                 player1.myTurn = true;
                 player2.myTurn = false;
                 player_role = 1;
+                p2Trans = 0.4f;
+                p1Trans = 0.8f;
+                player1.turnRound++;
             }
             Console.WriteLine(player_role);
             sec = 0;
             if (Math.Floor(rand.NextDouble() * 2) == 0) windDirection = -1;
             else windDirection = 1;
-            windPower = windDirection * (float) Math.Floor(rand.NextDouble() * 5.0f );
+            windPower = windDirection * (float) Math.Floor(rand.NextDouble() * 5.0f);
             timesUp = false;
         }
 
@@ -187,6 +208,17 @@ namespace PokeBoomz
                 swapPlayer();
             }
 
+            if (player1.remainedPokeball == 0 && player2.remainedPokeball == 0)
+            {
+                if (player1.allCP > player2.allCP)
+                {
+                    player2.lose = true;
+                }
+                else
+                {
+                    player1.lose = true;
+                }
+            }
 
             foreach (var player in Players)
             {
@@ -201,6 +233,9 @@ namespace PokeBoomz
                 {
                     thisPlayer.positionY = ground1.position.Y - thisPlayer.destinationRectangle.Height;
                     thisPlayer.accerelate = 0;
+                }
+                if (thisPlayer.myTurn && thisPlayer.remainedPokeball == 0)
+                {
                 }
                 player.Value.Update();
 
@@ -219,6 +254,7 @@ namespace PokeBoomz
                                 thisPokeball.hitPokemon = true;
                                 pokemon.isHit = true;
                                 hittedPokemon = pokemon;
+                                thisPlayer.allCP += pokemon.cp;
                             }
                         }
                     }
@@ -277,6 +313,10 @@ namespace PokeBoomz
                     spriteBatch.DrawString(spriteFont,
                         player.Value.angle + " DEG",
                         anglePosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+
+                    spriteBatch.DrawString(spriteFont,
+                        "Turn " + player.Value.turnRound,
+                        turnPosition, Color.Black * alpha, textRotation, origin, timerScale, textEffects, zDepth);
                 }
             }
             foreach (var pokemon in Pokemons)
@@ -290,6 +330,9 @@ namespace PokeBoomz
             {
                 obstacle.Draw();
             }
+
+            spriteBatch.Draw(card1, card1Position, Color.White * p1Trans);
+            spriteBatch.Draw(card2, card2Position, Color.White * p2Trans);
 
             spriteBatch.DrawString(spriteFont,
                 "Wind " + windPower,
