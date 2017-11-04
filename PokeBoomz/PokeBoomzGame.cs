@@ -31,21 +31,24 @@ namespace PokeBoomz
         public static int displayWidth = 1600, displayHeight = 1200;
         public static int groundY = 895;
 
-        private float alpha = 1.0f, textAlpha = 1.0f;
+        private float alpha = 1.0f, textAlpha = 1.0f, windAlpha = 1.0f;
         private float rotation = 0.0f, textRotation = 0.0f;
 
         private Vector2 origin = new Vector2(0, 0),
-            timerPosition = new Vector2(1200, 1100),
-            anglePosition = new Vector2(700, 1100),
-            windPosition = new Vector2(100, 500),
-            turnPosition = new Vector2(500, 200);
+            timerPosition = new Vector2(1450, 1100),
+            anglePosition = new Vector2(100, 1100),
+            windPosition = new Vector2(750, 50),
+            turnPosition = new Vector2(700, 1000),
+            powerBarPosition = new Vector2(0,1050);
 
-        public Texture2D card1, card2;
+        public Rectangle windRectangle, powerBarRectangle;
+
+        public Texture2D card1, card2, wind, powerBar;
         public Vector2 card1Position = new Vector2(10, 10), card2Position = new Vector2(10, 250);
         public float p1Trans, p2Trans;
 
-        private float scale = 2.0f, textScale = 0.8f, timerScale = 2.0f;
-        private SpriteEffects spriteEffect, textEffects;
+        private float scale = 2.0f, textScale = 0.8f, timerScale = 2.0f, windScale= 1.0f;
+        private SpriteEffects spriteEffect, textEffects, windEffects;
         private float zDepth = 0.1f;
 
         private Pokemon pokemon1, pokemon2, pokemon3, pokemon4, pokemon5, hittedPokemon;
@@ -98,7 +101,12 @@ namespace PokeBoomz
             card1 = Content.Load<Texture2D>("player_card1");
             card2 = Content.Load<Texture2D>("player_card2");
 
+            wind = Content.Load<Texture2D>("wind");
+            windRectangle = new Rectangle(0, 0, wind.Width, wind.Height);
             //  Obstacles.AddLast(block1);
+
+            powerBar = Content.Load<Texture2D>("powerBar");
+            powerBarRectangle = new Rectangle(0, 0, powerBar.Width, powerBar.Height);
 
             pokemon1 = new Pokemon(graphics, spriteBatch);
             pokemon1.initStat("Bird", "fly", 10, 10, 10);
@@ -147,7 +155,12 @@ namespace PokeBoomz
             Pokemons.AddLast(pokemon5);
 
 
-            if (Math.Floor(rand.NextDouble() * 2) == 0) windDirection = -1;
+            if (Math.Floor(rand.NextDouble() * 2) == 0)
+            {
+                windDirection = -1;
+                windEffects = SpriteEffects.FlipHorizontally;
+
+            }
             else windDirection = 1;
             windPower = windDirection * (float) Math.Floor(rand.NextDouble() * 5.0f);
         }
@@ -178,8 +191,16 @@ namespace PokeBoomz
             }
             Console.WriteLine(player_role);
             sec = 0;
-            if (Math.Floor(rand.NextDouble() * 2) == 0) windDirection = -1;
-            else windDirection = 1;
+            if (Math.Floor(rand.NextDouble() * 2) == 0)
+            {
+                windDirection = -1;
+                windEffects = SpriteEffects.FlipHorizontally;
+            }
+            else 
+            {
+                windDirection = 1;
+                windEffects = SpriteEffects.None;
+            }
             windPower = windDirection * (float) Math.Floor(rand.NextDouble() * 5.0f);
             timesUp = false;
         }
@@ -302,6 +323,7 @@ namespace PokeBoomz
             spriteBatch.Begin();
             bg1.Draw();
             ground1.Draw();
+            
             foreach (var player in Players)
             {
                 player.Value.Draw();
@@ -309,16 +331,7 @@ namespace PokeBoomz
                     Color.White * alpha, textRotation, origin, textScale, textEffects, zDepth);
                 if (player.Value.remainedPokeball > 0)
                     player.Value.Pokeballs[player.Value.pokeballToUse].Draw();
-                if (player.Value.myTurn)
-                {
-                    spriteBatch.DrawString(spriteFont,
-                        player.Value.angle + " DEG",
-                        anglePosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
-
-                    spriteBatch.DrawString(spriteFont,
-                        "Turn " + player.Value.turnRound,
-                        turnPosition, Color.Black * alpha, textRotation, origin, timerScale, textEffects, zDepth);
-                }
+               
             }
             foreach (var pokemon in Pokemons)
             {
@@ -331,16 +344,37 @@ namespace PokeBoomz
             {
                 obstacle.Draw();
             }
+            spriteBatch.Draw(powerBar, powerBarPosition, powerBarRectangle, Color.White * alpha,
+                rotation, origin, windScale, spriteEffect, zDepth);
 
+            foreach (var player in Players)
+            {
+                if (player.Value.myTurn)
+                {
+                    spriteBatch.DrawString(spriteFont,
+                        player.Value.angle + "",
+                        anglePosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+
+                    spriteBatch.DrawString(spriteFont,
+                        "Turn " + player.Value.turnRound,
+                        turnPosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+                }
+
+            }
+            
             spriteBatch.Draw(card1, card1Position, Color.White * p1Trans);
             spriteBatch.Draw(card2, card2Position, Color.White * p2Trans);
 
+            spriteBatch.Draw(wind, windPosition, windRectangle, Color.White * windAlpha,
+                rotation, origin, windScale, windEffects, zDepth);
+            
             spriteBatch.DrawString(spriteFont,
-                "Wind " + windPower,
-                windPosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+                Math.Abs(windPower).ToString(),
+                new Vector2(windPosition.X + 50,windPosition.Y + 20), 
+                Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
 
             spriteBatch.DrawString(spriteFont,
-                "TIME: " + (turnTimeLimit - sec),
+                "" + (turnTimeLimit - sec),
                 timerPosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
 
             spriteBatch.End();

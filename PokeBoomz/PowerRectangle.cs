@@ -30,7 +30,7 @@ namespace PokeBoomz
         public void LoadContent()
         {
 //            rectangle = new Rectangle((int) position.X, (int) position.Y, (int) powerGage.X, (int) powerGage.Y);
-            rectangle = new Rectangle(300, 900, 0, 50);
+            rectangle = new Rectangle(300, 1085, 0, 80);
             dummyTexture = PokeBoomzGame.dummyTexture;
         }
 

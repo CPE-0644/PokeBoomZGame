@@ -73,7 +73,7 @@ namespace PokeBoomz
                 }
                 else
                 {
-                    this.fvelocity.X += (float)PokeBoomzGame.windPower / 100.0f;
+                    this.fvelocity.X += (float) PokeBoomzGame.windPower / 100.0f;
                     this.fvelocity.Y -= (float) PokeBoomzGame.gravity / 2;
                 }
                 if (fvelocity.Y >= 0)
