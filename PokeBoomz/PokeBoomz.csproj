@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AnimatedSprite.cs" />
+    <Compile Include="HomeGame.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="ObjectedCircle.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecialRectangle.cs" />
+    <Compile Include="UI_HowToPlay.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomz/PokeBoomz/Content/map/bg01.png</SourceFile>
-  <SourceTime>2017-10-30T18:13:29.5036338+07:00</SourceTime>
-  <DestFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomz/PokeBoomz/Content/bin/Windows/map/bg01.xnb</DestFile>
-  <DestTime>2017-10-30T18:30:10.7374374+07:00</DestTime>
+  <SourceFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/map/bg01.png</SourceFile>
+  <SourceTime>2017-11-04T06:14:24+07:00</SourceTime>
+  <DestFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/bin/Windows/map/bg01.xnb</DestFile>
+  <DestTime>2017-11-17T19:54:42.715723+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T22:05:36+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

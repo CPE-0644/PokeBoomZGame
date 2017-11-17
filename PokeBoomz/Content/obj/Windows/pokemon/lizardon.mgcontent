@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomz/PokeBoomz/Content/pokemon/lizardon.png</SourceFile>
-  <SourceTime>2017-10-29T21:22:53.3528347+07:00</SourceTime>
-  <DestFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomz/PokeBoomz/Content/bin/Windows/pokemon/lizardon.xnb</DestFile>
-  <DestTime>2017-10-30T17:42:33.5692464+07:00</DestTime>
+  <SourceFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/lizardon.png</SourceFile>
+  <SourceTime>2017-11-04T06:14:24+07:00</SourceTime>
+  <DestFile>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/bin/Windows/pokemon/lizardon.xnb</DestFile>
+  <DestTime>2017-11-17T19:54:42.3588831+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T22:05:36+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

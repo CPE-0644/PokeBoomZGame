@@ -25,27 +25,21 @@ namespace PokeBoomz
         public Rectangle sourceRectangle, destinationRectangle;
         public string type;
         static Random rand = new Random();
-
         private float alpha = 1.0f, textAlpha = 1.0f;
         private float rotation = 0.0f, textRotation = 0.0f;
         private Vector2 origin = new Vector2(0, 0);
         private float scale = 2.0f, textScale = 0.8f;
         private SpriteEffects spriteEffect, textEffects;
         private float zDepth = 0.1f;
-
         public float left, top, right, btm;
-
         public double positionX, positionY;
         public double accerelate = 1;
-
-        public bool isHit = false;
-        
+        public bool isHit = false;     
         public Vector2 infoPosition;
-
+        public float movingCond = 0;
         public Pokemon()
         {
         }
-
         public Pokemon(GraphicsDeviceManager graphicsDevice, SpriteBatch spriteBatch)
         {
             this.graphicsDevice = graphicsDevice;
@@ -61,7 +55,13 @@ namespace PokeBoomz
             this.chance = chance;
             this.spawnRate = spawnRate;
         }
-
+        public void initSide()
+        {
+            top = (float) positionY;
+            left = (float) positionX;
+            right = (float) positionX + destinationRectangle.Width;
+            btm = (float) positionY + destinationRectangle.Height;
+        }     
         public void LoadContent(ContentManager Content, String imag, int rows, int columns)
         {
             Rows = rows;
@@ -74,24 +74,36 @@ namespace PokeBoomz
             positionY = rand.NextDouble() * PokeBoomzGame.groundY;
         }
 
-        public float movingCond = 0;
-
+        
         public void Update()
-        {
-            frameCounter++;
-            if (frameCounter % 10 == 0)
-            {
-                currentFrame++;
-                frameCounter = 0;
-            }
-            if (currentFrame == totalFrames)
-            {
-                currentFrame = 0;
-                movingCond = (float) Math.Floor(rand.NextDouble() * 3);
-            }
-
+        {           
             infoPosition = new Vector2((float) positionX + 10, (float) positionY + destinationRectangle.Height);
-            
+            FrameUpdate();
+            MovingByTypes();         
+            edgeChecking();
+            initSide();
+        }
+      
+        
+        public void Draw()
+        {
+            int width = texture.Width / Columns;
+            int height = texture.Height / Rows;
+            int row = (int) ((float) currentFrame / (float) Columns);
+            int column = currentFrame % Columns;
+
+            sourceRectangle = new Rectangle(width * column, height * row, width, height);
+            destinationRectangle =
+                new Rectangle((int) positionX, (int) positionY, width + scaleSize, height + scaleSize);
+
+            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White,
+                rotation, origin, spriteEffect, zDepth);
+
+            //            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
+        }
+
+        public void MovingByTypes()
+        {
             if (type == "fly")
             {
                 if (currentFrame < totalFrames / 2)
@@ -115,10 +127,34 @@ namespace PokeBoomz
                     moveLeft();
                 else if (movingCond == 1) moveRight();
             }
-            moving();
-            initSide();
         }
 
+        public void FrameUpdate()
+        {
+            frameCounter++;
+            if (frameCounter % 10 == 0)
+            {
+                currentFrame++;
+                frameCounter = 0;
+            }
+            if (currentFrame == totalFrames)
+            {
+                currentFrame = 0;
+                movingCond = (float)Math.Floor(rand.NextDouble() * 3);
+            }
+        }
+        public void edgeChecking()
+        {
+            if (this.positionX < 0)
+            {
+                this.positionX = 0;
+            }
+            if (this.positionX + destinationRectangle.Width > PokeBoomzGame.displayWidth)
+            {
+                this.positionX = PokeBoomzGame.displayWidth - destinationRectangle.Width;
+            }
+            if (this.positionY < 0) this.positionY = 0;
+        }
         public void moveUp()
         {
             this.positionY -= 1;
@@ -140,43 +176,6 @@ namespace PokeBoomz
             this.positionX += 1;
             spriteEffect = SpriteEffects.FlipHorizontally;
         }
-
-        public void initSide()
-        {
-            top = (float) positionY;
-            left = (float) positionX;
-            right = (float) positionX + destinationRectangle.Width;
-            btm = (float) positionY + destinationRectangle.Height;
-        }
-
-        public void moving()
-        {
-            if (this.positionX < 0)
-            {
-                this.positionX = 0;
-            }
-            if (this.positionX + destinationRectangle.Width > PokeBoomzGame.displayWidth)
-            {
-                this.positionX = PokeBoomzGame.displayWidth - destinationRectangle.Width;
-            }
-            if (this.positionY < 0) this.positionY = 0;
-        }
-
-        public void Draw()
-        {
-            int width = texture.Width / Columns;
-            int height = texture.Height / Rows;
-            int row = (int) ((float) currentFrame / (float) Columns);
-            int column = currentFrame % Columns;
-
-            sourceRectangle = new Rectangle(width * column, height * row, width, height);
-            destinationRectangle =
-                new Rectangle((int) positionX, (int) positionY, width + scaleSize, height + scaleSize);
-
-            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White,
-                rotation, origin, spriteEffect, zDepth);
-
-            //            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
-        }
     }
+
 }

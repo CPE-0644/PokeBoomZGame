@@ -39,7 +39,7 @@ namespace PokeBoomz
             anglePosition = new Vector2(100, 1100),
             windPosition = new Vector2(750, 50),
             turnPosition = new Vector2(700, 1000),
-            powerBarPosition = new Vector2(0,1050);
+            powerBarPosition = new Vector2(0, 1050);
 
         public Rectangle windRectangle, powerBarRectangle;
 
@@ -47,7 +47,7 @@ namespace PokeBoomz
         public Vector2 card1Position = new Vector2(10, 10), card2Position = new Vector2(10, 250);
         public float p1Trans, p2Trans;
 
-        private float scale = 2.0f, textScale = 0.8f, timerScale = 2.0f, windScale= 1.0f;
+        private float scale = 2.0f, textScale = 0.8f, timerScale = 2.0f, windScale = 1.0f;
         private SpriteEffects spriteEffect, textEffects, windEffects;
         private float zDepth = 0.1f;
 
@@ -85,7 +85,7 @@ namespace PokeBoomz
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             dummyTexture = new Texture2D(GraphicsDevice, 1, 1);
-            dummyTexture.SetData(new Color[] {Color.OrangeRed});
+            dummyTexture.SetData(new Color[] { Color.OrangeRed });
 
             spriteFont = Content.Load<SpriteFont>("Arial");
 
@@ -129,13 +129,13 @@ namespace PokeBoomz
             pokemon5.LoadContent(Content, "pokemon/monkey_22", 22, 1);
 
             player1 = new Player(graphics, spriteBatch);
-            player1.LoadContent(Content, "character/female/stand", 
+            player1.LoadContent(Content, "character/female/stand",
                 "character/female/walk", "character/female/throw",
-                "character/female/lose",1, 3);
+                "character/female/lose", 1, 3);
 
             player2 = new Player(graphics, spriteBatch);
-            player2.LoadContent(Content, "character/male/stand", 
-                "character/male/walk", "character/male/throw", 
+            player2.LoadContent(Content, "character/male/stand",
+                "character/male/walk", "character/male/throw",
                 "character/male/lose", 1, 3);
 
             player1.myTurn = true;
@@ -162,48 +162,10 @@ namespace PokeBoomz
 
             }
             else windDirection = 1;
-            windPower = windDirection * (float) Math.Floor(rand.NextDouble() * 5.0f);
+            windPower = windDirection * (float)Math.Floor(rand.NextDouble() * 5.0f);
         }
 
-        protected override void UnloadContent()
-        {
-        }
-
-        public void swapPlayer()
-        {
-            if (player_role == 1 && player2.remainedPokeball > 0)
-            {
-                player1.myTurn = false;
-                player2.myTurn = true;
-                player_role = 2;
-                p1Trans = 0.4f;
-                p2Trans = 0.8f;
-                player2.turnRound++;
-            }
-            else if (player_role == 2 && player1.remainedPokeball > 0)
-            {
-                player1.myTurn = true;
-                player2.myTurn = false;
-                player_role = 1;
-                p2Trans = 0.4f;
-                p1Trans = 0.8f;
-                player1.turnRound++;
-            }
-            Console.WriteLine(player_role);
-            sec = 0;
-            if (Math.Floor(rand.NextDouble() * 2) == 0)
-            {
-                windDirection = -1;
-                windEffects = SpriteEffects.FlipHorizontally;
-            }
-            else 
-            {
-                windDirection = 1;
-                windEffects = SpriteEffects.None;
-            }
-            windPower = windDirection * (float) Math.Floor(rand.NextDouble() * 5.0f);
-            timesUp = false;
-        }
+       
 
         protected override void Update(GameTime gameTime)
         {
@@ -214,21 +176,40 @@ namespace PokeBoomz
 
             lastKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
-
-            millisec++;
-            if (millisec % 60 == 0)
+             millisec++;
+          
+           if (millisec % 60 == 0)
             {
                 millisec = 0;
                 sec++;
             }
 
+
+           Timeupandswapplayer();
+           remainball();          
+           Pokemons.Remove(hittedPokemon);
+           Typeofpokemon();
+           Activetyofplayer();
+                        
+            if (Pokemons.Count() == 0)
+            {
+                Exit();
+            }
+            base.Update(gameTime);
+        }
+
+        public void Timeupandswapplayer()
+        {
             if (turnTimeLimit - sec == 0)
             {
                 timesUp = true;
                 sec = 0;
                 swapPlayer();
             }
+        }
 
+        public void remainball()
+        {
             if (player1.remainedPokeball == 0 && player2.remainedPokeball == 0)
             {
                 if (player1.allCP > player2.allCP)
@@ -237,13 +218,85 @@ namespace PokeBoomz
                 }
                 else
                 {
-                    player1.lose = true;
+                    player1.lose = true; 
                 }
             }
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
+            bg1.Draw();
+            ground1.Draw();
 
             foreach (var player in Players)
             {
-//                if (player_role == player.Key) 
+                player.Value.Draw();
+                spriteBatch.DrawString(spriteFont, "Player " + player.Key, player.Value.infoPosition,
+                    Color.White * alpha, textRotation, origin, textScale, textEffects, zDepth);
+                if (player.Value.remainedPokeball > 0)
+                    player.Value.Pokeballs[player.Value.pokeballToUse].Draw();
+
+            }
+            foreach (var pokemon in Pokemons)
+            {
+                pokemon.Draw();
+                spriteBatch.DrawString(spriteFont,
+                    pokemon.name + "\nCp " + pokemon.cp + "\nChance " + pokemon.chance + "%",
+                    pokemon.infoPosition, Color.White * alpha, textRotation, origin, textScale, textEffects, zDepth);
+            }
+            foreach (var obstacle in Obstacles)
+            {
+                obstacle.Draw();
+            }
+            spriteBatch.Draw(powerBar, powerBarPosition, powerBarRectangle, Color.White * alpha,
+                rotation, origin, windScale, spriteEffect, zDepth);
+
+            foreach (var player in Players)
+            {
+                if (player.Value.myTurn)
+                {
+                    spriteBatch.DrawString(spriteFont,
+                        player.Value.angle + "",
+                        anglePosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+
+                    spriteBatch.DrawString(spriteFont,
+                        "Turn " + player.Value.turnRound,
+                        turnPosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+                }
+
+            }
+
+            spriteBatch.Draw(card1, card1Position, Color.White * p1Trans);
+            spriteBatch.Draw(card2, card2Position, Color.White * p2Trans);
+
+            spriteBatch.Draw(wind, windPosition, windRectangle, Color.White * windAlpha,
+                rotation, origin, windScale, windEffects, zDepth);
+
+            spriteBatch.DrawString(spriteFont,
+                Math.Abs(windPower).ToString(),
+                new Vector2(windPosition.X + 50, windPosition.Y + 20),
+                Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+
+            spriteBatch.DrawString(spriteFont,
+                "" + (turnTimeLimit - sec),
+                timerPosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
+
+            spriteBatch.End();
+
+            //             spriteBatch.Draw(arrow, location, sourceRectangle, Color.White, angle, origin, 1.0f, SpriteEffects.None, 1);
+            base.Draw(gameTime);
+        }
+        protected override void UnloadContent()
+        {
+        }
+
+        public void Activetyofplayer()
+        {
+            foreach (var player in Players)
+            {
+                //                if (player_role == player.Key) 
                 Player thisPlayer = player.Value;
                 if (thisPlayer.positionY + thisPlayer.destinationRectangle.Height < ground1.position.Y)
                 {
@@ -282,9 +335,10 @@ namespace PokeBoomz
                     }
                 }
             }
+        }
 
-            Pokemons.Remove(hittedPokemon);
-
+        public void Typeofpokemon()
+        {
             foreach (var pokemon in Pokemons)
             {
                 if (pokemon.type == "fly")
@@ -308,79 +362,45 @@ namespace PokeBoomz
                     }
                 }
                 pokemon.Update();
-            }
-            if (Pokemons.Count() == 0)
-            {
-                Exit();
-            }
-            base.Update(gameTime);
+            } 
+          
+
         }
 
-
-        protected override void Draw(GameTime gameTime)
+        public void swapPlayer()
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
-            bg1.Draw();
-            ground1.Draw();
-            
-            foreach (var player in Players)
+            if (player_role == 1 && player2.remainedPokeball > 0)
             {
-                player.Value.Draw();
-                spriteBatch.DrawString(spriteFont, "Player " + player.Key, player.Value.infoPosition,
-                    Color.White * alpha, textRotation, origin, textScale, textEffects, zDepth);
-                if (player.Value.remainedPokeball > 0)
-                    player.Value.Pokeballs[player.Value.pokeballToUse].Draw();
-               
+                player1.myTurn = false;
+                player2.myTurn = true;
+                player_role = 2;
+                p1Trans = 0.4f;
+                p2Trans = 0.8f;
+                player2.turnRound++;
             }
-            foreach (var pokemon in Pokemons)
+            else if (player_role == 2 && player1.remainedPokeball > 0)
             {
-                pokemon.Draw();
-                spriteBatch.DrawString(spriteFont,
-                    pokemon.name + "\nCp " + pokemon.cp + "\nChance " + pokemon.chance + "%",
-                    pokemon.infoPosition, Color.White * alpha, textRotation, origin, textScale, textEffects, zDepth);
+                player1.myTurn = true;
+                player2.myTurn = false;
+                player_role = 1;
+                p2Trans = 0.4f;
+                p1Trans = 0.8f;
+                player1.turnRound++;
             }
-            foreach (var obstacle in Obstacles)
+            Console.WriteLine(player_role);
+            sec = 0;
+            if (Math.Floor(rand.NextDouble() * 2) == 0)
             {
-                obstacle.Draw();
+                windDirection = -1;
+                windEffects = SpriteEffects.FlipHorizontally;
             }
-            spriteBatch.Draw(powerBar, powerBarPosition, powerBarRectangle, Color.White * alpha,
-                rotation, origin, windScale, spriteEffect, zDepth);
-
-            foreach (var player in Players)
+            else
             {
-                if (player.Value.myTurn)
-                {
-                    spriteBatch.DrawString(spriteFont,
-                        player.Value.angle + "",
-                        anglePosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
-
-                    spriteBatch.DrawString(spriteFont,
-                        "Turn " + player.Value.turnRound,
-                        turnPosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
-                }
-
+                windDirection = 1;
+                windEffects = SpriteEffects.None;
             }
-            
-            spriteBatch.Draw(card1, card1Position, Color.White * p1Trans);
-            spriteBatch.Draw(card2, card2Position, Color.White * p2Trans);
-
-            spriteBatch.Draw(wind, windPosition, windRectangle, Color.White * windAlpha,
-                rotation, origin, windScale, windEffects, zDepth);
-            
-            spriteBatch.DrawString(spriteFont,
-                Math.Abs(windPower).ToString(),
-                new Vector2(windPosition.X + 50,windPosition.Y + 20), 
-                Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
-
-            spriteBatch.DrawString(spriteFont,
-                "" + (turnTimeLimit - sec),
-                timerPosition, Color.White * alpha, textRotation, origin, timerScale, textEffects, zDepth);
-
-            spriteBatch.End();
-
-            //             spriteBatch.Draw(arrow, location, sourceRectangle, Color.White, angle, origin, 1.0f, SpriteEffects.None, 1);
-            base.Draw(gameTime);
+            windPower = windDirection * (float)Math.Floor(rand.NextDouble() * 5.0f);
+            timesUp = false;
         }
     }
 }

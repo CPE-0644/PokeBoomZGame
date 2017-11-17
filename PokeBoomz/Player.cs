@@ -92,36 +92,18 @@ namespace PokeBoomz
             Pokeballs.Add(pokeball1);
             Pokeballs.Add(pokeball2);
             Pokeballs.Add(pokeball3);
-
-//            item1 = new Item(graphicsDevice, spriteBatch);
-//            item2 = new Item(graphicsDevice, spriteBatch);
-//            item3 = new Item(graphicsDevice, spriteBatch);
-//            item1.LoadContent(Content, "item/change_wind", 100, 1000);
-//            item2.LoadContent(Content, "item/freeze", 210, 1000);
-//            item3.LoadContent(Content, "item/double_size", 320, 1000);
-//
-//            Items.AddLast(item1);
-//            Items.AddLast(item2);
-//            Items.AddLast(item3);
-
             remainedPokeball = Pokeballs.Count();
         }
 
         public void Update()
         {
-            frameCounter++;
-            if (frameCounter % 5 == 0)
-            {
-                currentFrame++;
-                frameCounter = 0;
-            }
-            if (currentFrame == totalFrames)
-                currentFrame = 0;
+            Framerate();
             keyboardState = Keyboard.GetState();
 
             infoPosition = new Vector2((float) positionX + 20, (float) positionY - 10);
 
             animation = texture;
+
             if (remainedPokeball > 0)
                 Pokeballs[pokeballToUse].Update(isThrown, pokeballRotation, angle, power, turnLeft);
             if (myTurn)
@@ -142,25 +124,46 @@ namespace PokeBoomz
                     }
                 }
                 else resetTurn();
-
-//                foreach (var item in Items)
-//                {
-//                    item.Update();
-//                }
             }
             else
             {
                 power = 0;
                 powerRectangle.powerGage.X = 0;
             }
+
             powerRectangle.Update();
+
             if (lose)
             {
                 animation = loseTexture;
                 positionY += 30;
             }
-        }
 
+        }
+        public void Draw()
+        {
+            int width = texture.Width / Columns;
+            int height = texture.Height / Rows;
+            int row = (int)((float)currentFrame / (float)Columns);
+            int column = currentFrame % Columns;
+
+            if (remainedPokeball > 0)
+            {
+                spriteBatch.Draw(arrow, arrowPosition, arrowRectangle, Color.White * alpha, arrowRotation,
+                    arrowOrigin, arrowScale, spriteEffect, zDepth);
+                Pokeballs[pokeballToUse].Draw();
+            }
+
+            sourceRectangle = new Rectangle(width * column, height * row, width, height);
+            destinationRectangle =
+                new Rectangle((int)positionX, (int)positionY, width + scaleSize, height + scaleSize);         
+            spriteBatch.Draw(animation, destinationRectangle, sourceRectangle, Color.White,
+                rotation, origin, spriteEffect, zDepth);
+            //            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
+
+            powerRectangle.Draw();
+        }
+ 
         public void isPokeballCollapsed()
         {
             Pokeball thisPokeball = Pokeballs[pokeballToUse];
@@ -170,6 +173,18 @@ namespace PokeBoomz
                 remainedPokeball--;
                 resetTurn();
             }
+        }
+
+        public void Framerate()
+        {
+            frameCounter++;
+            if (frameCounter % 5 == 0)
+            {
+                currentFrame++;
+                frameCounter = 0;
+            }
+            if (currentFrame == totalFrames)
+                currentFrame = 0;
         }
 
         public void resetTurn()
@@ -283,39 +298,6 @@ namespace PokeBoomz
             Console.WriteLine(angle);
         }
 
-        public void Draw()
-        {
-            int width = texture.Width / Columns;
-            int height = texture.Height / Rows;
-            int row = (int) ((float) currentFrame / (float) Columns);
-            int column = currentFrame % Columns;
-
-            if (myTurn)
-            {
-//               foreach (var item in Items)
-//            {
-//                item.Draw();
-//            } 
-            }
-
-
-            sourceRectangle = new Rectangle(width * column, height * row, width, height);
-            destinationRectangle =
-                new Rectangle((int) positionX, (int) positionY, width + scaleSize, height + scaleSize);
-
-            if (remainedPokeball > 0)
-            {
-                spriteBatch.Draw(arrow, arrowPosition, arrowRectangle, Color.White * alpha, arrowRotation,
-                    arrowOrigin, arrowScale, spriteEffect, zDepth);
-                Pokeballs[pokeballToUse].Draw();
-            }
-
-
-            spriteBatch.Draw(animation, destinationRectangle, sourceRectangle, Color.White,
-                rotation, origin, spriteEffect, zDepth);
-            //            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
-
-            powerRectangle.Draw();
-        }
+        
     }
 }

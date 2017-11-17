@@ -26,9 +26,7 @@ namespace PokeBoomZ
 
         public void Update()
         {
-            currentFrame++;
-            if (currentFrame == totalFrames)
-                currentFrame = 0;
+            CurrentFrame();
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 location)
@@ -44,6 +42,12 @@ namespace PokeBoomZ
             spriteBatch.Begin();
             spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
             spriteBatch.End();
+        }
+        public void CurrentFrame()
+        {
+            currentFrame++;
+            if (currentFrame == totalFrames)
+                currentFrame = 0;
         }
     }
 }

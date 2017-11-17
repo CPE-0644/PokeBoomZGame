@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace PokeBoomz
+namespace PokeBoomz 
 {
     class SpecialRectangle : Game
     {
@@ -25,6 +25,17 @@ namespace PokeBoomz
         }
 
         public void Update()
+        {
+            display();
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(dummyTexture, rectangle, Color.White);
+            
+        }
+
+        public void display()
         {
             if (rectangle.Y + rectangle.Height < PokeBoomzGame.displayHeight / 2)
             {
@@ -65,13 +76,7 @@ namespace PokeBoomz
                 angel -= 1;
                 if (angel <= 0) angel = 0;
             }
-           
-        }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(dummyTexture, rectangle, Color.White);
-            
         }
     }
 }

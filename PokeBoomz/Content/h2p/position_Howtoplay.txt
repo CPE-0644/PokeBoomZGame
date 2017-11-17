@@ -1,0 +1,7 @@
+position 
+picturegame 
+x:499.50 y: 603.5
+back button
+x:303.00 y:1065
+play buton 
+x:1269.00   y:1065

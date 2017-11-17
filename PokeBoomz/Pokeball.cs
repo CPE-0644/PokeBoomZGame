@@ -27,7 +27,7 @@ namespace PokeBoomz
         private float zDepth = 0.1f;
         private float angle = 45, power = 0;
         public bool isThrown = false, initialized = false, turnLeft, hitPokemon = false;
-        private const float degtorad = (float) Math.PI / 180;
+        private const float degtorad = (float)Math.PI / 180;
         private Vector2 ivelocity, fvelocity;
 
         public MouseState mouseState;
@@ -63,8 +63,8 @@ namespace PokeBoomz
             if (isThrown)
             {
                 this.power = _power;
-                this.ivelocity.X = (float) (power / 3) * (float) Math.Cos(this.angle);
-                this.ivelocity.Y = (float) (power / 3) * (float) Math.Sin(this.angle);
+                this.ivelocity.X = (float)(power / 3) * (float)Math.Cos(this.angle);
+                this.ivelocity.Y = (float)(power / 3) * (float)Math.Sin(this.angle);
                 if (!this.initialized)
                 {
                     this.initialized = true;
@@ -73,8 +73,8 @@ namespace PokeBoomz
                 }
                 else
                 {
-                    this.fvelocity.X += (float) PokeBoomzGame.windPower / 100.0f;
-                    this.fvelocity.Y -= (float) PokeBoomzGame.gravity / 2;
+                    this.fvelocity.X += (float)PokeBoomzGame.windPower / 100.0f;
+                    this.fvelocity.Y -= (float)PokeBoomzGame.gravity / 2;
                 }
                 if (fvelocity.Y >= 0)
                 {
