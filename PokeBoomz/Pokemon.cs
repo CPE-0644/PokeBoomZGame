@@ -10,10 +10,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PokeBoomz
 {
-    class Pokemon
+    public class Pokemon
     {
         public string name;
-        public float cp, chance, spawnRate;
+        public float cp;
         public Texture2D texture { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
@@ -37,6 +37,7 @@ namespace PokeBoomz
         public bool isHit = false;     
         public Vector2 infoPosition;
         public float movingCond = 0;
+        public int caughtByBallNO = 0;
         public Pokemon()
         {
         }
@@ -47,13 +48,11 @@ namespace PokeBoomz
 //            Console.WriteLine(positionX);
         }
 
-        public void initStat(string name, string type, float cp, float chance, float spawnRate)
+        public void initStat(string name, string type, float cp)
         {
             this.name = name;
             this.type = type;
             this.cp = cp;
-            this.chance = chance;
-            this.spawnRate = spawnRate;
         }
         public void initSide()
         {
@@ -79,7 +78,7 @@ namespace PokeBoomz
         {           
             infoPosition = new Vector2((float) positionX + 10, (float) positionY + destinationRectangle.Height);
             FrameUpdate();
-            MovingByTypes();         
+            if(!isHit) MovingByTypes();         
             edgeChecking();
             initSide();
         }
@@ -157,23 +156,23 @@ namespace PokeBoomz
         }
         public void moveUp()
         {
-            this.positionY -= 1;
+            this.positionY -= 1 * PokeBoomzGame.moveFactor;
         }
 
         public void moveDown()
         {
-            this.positionY += 1;
+            this.positionY += 1 * PokeBoomzGame.moveFactor;
         }
 
         public void moveLeft()
         {
-            this.positionX -= 1;
+            this.positionX -= 1 * PokeBoomzGame.moveFactor;
             spriteEffect = SpriteEffects.None;
         }
 
         public void moveRight()
         {
-            this.positionX += 1;
+            this.positionX += 1 * PokeBoomzGame.moveFactor;
             spriteEffect = SpriteEffects.FlipHorizontally;
         }
     }

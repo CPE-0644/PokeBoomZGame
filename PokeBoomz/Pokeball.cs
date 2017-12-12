@@ -17,12 +17,12 @@ namespace PokeBoomz
         private SpriteBatch spriteBatch;
         public Rectangle drawRec;
         public Vector2 position;
-        private Texture2D texture;
+        public Texture2D texture;
 
         private float alpha = 1.0f;
         private float rotation = 0.0f;
         public Vector2 origin, positionCenter;
-        private float scale = 0.5f;
+        public float scale = 0.5f;
         private SpriteEffects spriteEffect = SpriteEffects.None;
         private float zDepth = 0.1f;
         private float angle = 45, power = 0;
@@ -104,10 +104,10 @@ namespace PokeBoomz
             return false;
         }
 
-        public void Draw()
+        public void Draw(float ballSize)
         {
             spriteBatch.Draw(texture, position, drawRec,
-                Color.White * alpha, rotation, origin, scale, spriteEffect,
+                Color.White * alpha, rotation, origin, ballSize, spriteEffect,
                 zDepth);
         }
     }

@@ -11,19 +11,19 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PokeBoomz
 {
-    class Obstacle
+    public class Obstacle
     {
-        private GraphicsDeviceManager graphicsDevice;
-        private SpriteBatch spriteBatch;
+        public GraphicsDeviceManager graphicsDevice;
+        public SpriteBatch spriteBatch;
         public Rectangle drawRec;
         public Vector2 position, originPos;
-        private Texture2D texture;
-        private float alpha = 1.0f;
-        private float rotation = 0.0f;
-        private Vector2 origin;
-        private float scale = 1.0f;
-        private SpriteEffects spriteEffect = SpriteEffects.None;
-        private float zDepth = 0.1f;
+        public Texture2D texture;
+        public float alpha = 1.0f;
+        public float rotation = 0.0f;
+        public Vector2 origin;
+        public float scale = 1.0f;
+        public SpriteEffects spriteEffect = SpriteEffects.None;
+        public float zDepth = 0.1f;
         public MouseState lastMouseState, mouseState;
 
         public Obstacle(GraphicsDeviceManager graphicsDevice, SpriteBatch spriteBatch)

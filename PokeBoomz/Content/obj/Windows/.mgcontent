@@ -22,9 +22,6 @@
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/ho-on_15.png</File>
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/monkey_22.png</File>
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/Arial.spritefont</File>
-    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/item/change_wind.png</File>
-    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/item/double_size.png</File>
-    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/item/freeze.jpg</File>
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/character/female/lose.png</File>
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/character/female/stand.png</File>
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/character/female/throw.png</File>
@@ -46,5 +43,16 @@
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/h2p/back.png</File>
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/h2p/bg_h2p.png</File>
     <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/h2p/play.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokeball/pokeball4.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokeball/pokeball5.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/poke1.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/poke2.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/poke3.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/poke4.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/pokemon/poke5.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/skill/skill1.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/skill/skill2.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/skill/skill3.png</File>
+    <File>C:/Users/Patsakorn/Documents/Visual Studio 2017/Projects/PokeBoomZGame/PokeBoomz/Content/skill/skill4.png</File>
   </SourceFiles>
 </SourceFileCollection>

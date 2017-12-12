@@ -21,14 +21,16 @@ namespace PokeBoomz
         private int currentFrame, frameCounter;
         private int totalFrames;
 
+        public int sp = 100;
         public int scaleSize = 10, turnRound;
-        public float allCP;
+        public float maxCP = 0;
         public bool isThrown = false, lose = false;
         public double positionX = 0, positionY = 0;
         public float angle = 45, power;
         public Vector2 position, infoPosition, arrowPosition;
         private Texture2D texture, walkTexture, throwTexture, loseTexture, arrow, animation;
         public bool turnLeft, turnRight, startTurn = true, myTurn;
+        public float ballSize = 0.5f;
 
         private float alpha = 1.0f;
         private float pokeballRotation = 0.0f, rotation = 0.0f, arrowRotation = 0.0f;
@@ -44,14 +46,17 @@ namespace PokeBoomz
         public double accerelate = 1;
         private const float degtorad = (float) Math.PI / 180;
 
-        public List<Pokeball> Pokeballs = new List<Pokeball>(3);
+        public List<Pokeball> Pokeballs = new List<Pokeball>(5);
 
         public List<Pokemon> OwnPokemons = new List<Pokemon>(6);
-//        public LinkedList<Item> Items = new LinkedList<Item>();
 
-//        public Item item1, item2, item3;
+        public Pokeball pokeball1, pokeball2, pokeball3, pokeball4, pokeball5;
 
-        public Pokeball pokeball1, pokeball2, pokeball3;
+        public List<Skill> Skills = new List<Skill>(5);
+
+        public Skill skill1, skill2, skill3, skill4, skill5;
+
+        public Pokemon maximumCpPokemon = new Pokemon();
 
         public Player(GraphicsDeviceManager graphicsDevice, SpriteBatch spriteBatch)
         {
@@ -86,12 +91,40 @@ namespace PokeBoomz
             pokeball1 = new Pokeball(graphicsDevice, spriteBatch);
             pokeball2 = new Pokeball(graphicsDevice, spriteBatch);
             pokeball3 = new Pokeball(graphicsDevice, spriteBatch);
+            pokeball4 = new Pokeball(graphicsDevice, spriteBatch);
+            pokeball5 = new Pokeball(graphicsDevice, spriteBatch);
             pokeball1.LoadContent(Content, "pokeball/pokeball1");
             pokeball2.LoadContent(Content, "pokeball/pokeball2");
             pokeball3.LoadContent(Content, "pokeball/pokeball3");
+            pokeball4.LoadContent(Content, "pokeball/pokeball4");
+            pokeball5.LoadContent(Content, "pokeball/pokeball5");
             Pokeballs.Add(pokeball1);
             Pokeballs.Add(pokeball2);
             Pokeballs.Add(pokeball3);
+            Pokeballs.Add(pokeball4);
+            Pokeballs.Add(pokeball5);
+            skill1 = new Skill(graphicsDevice, spriteBatch);
+            skill2 = new Skill(graphicsDevice, spriteBatch);
+            skill3 = new Skill(graphicsDevice, spriteBatch);
+            skill4 = new Skill(graphicsDevice, spriteBatch);
+            skill5 = new Skill(graphicsDevice, spriteBatch);
+
+            skill1.LoadContent(Content, "skill/skill1", 1200, 1000);
+            skill2.LoadContent(Content, "skill/skill2", 1300, 1000);
+            skill3.LoadContent(Content, "skill/skill3", 1400, 1000);
+            skill4.LoadContent(Content, "skill/skill4", 1500, 1000);
+            
+            skill1.LoadEffect("remove", 50, Keys.Q);
+            skill2.LoadEffect("increase time", 20, Keys.W);
+            skill3.LoadEffect("freeze", 20, Keys.E);
+            skill4.LoadEffect("double", 10, Keys.R);
+            
+
+            Skills.Add(skill1);
+            Skills.Add(skill2);
+            Skills.Add(skill3);
+            Skills.Add(skill4);
+            
             remainedPokeball = Pokeballs.Count();
         }
 
@@ -109,7 +142,7 @@ namespace PokeBoomz
             if (myTurn)
             {
                 PlayerMoving();
-
+                UseSkill();
                 if (remainedPokeball > 0)
                 {
                     if (!isThrown)
@@ -140,6 +173,23 @@ namespace PokeBoomz
             }
 
         }
+
+        public void UseSkill()
+        {
+            foreach (var skill in Skills)
+            {
+                if (keyboardState.IsKeyDown(skill.key) && sp-skill.sp >= 0)
+                {
+                    if (!skill.used)
+                    {
+                        skill.used = true;
+                        skill.effectON = true;
+                    }
+                }
+                skill.Update();
+            }
+        }
+
         public void Draw()
         {
             int width = texture.Width / Columns;
@@ -151,7 +201,7 @@ namespace PokeBoomz
             {
                 spriteBatch.Draw(arrow, arrowPosition, arrowRectangle, Color.White * alpha, arrowRotation,
                     arrowOrigin, arrowScale, spriteEffect, zDepth);
-                Pokeballs[pokeballToUse].Draw();
+                Pokeballs[pokeballToUse].Draw(ballSize);
             }
 
             sourceRectangle = new Rectangle(width * column, height * row, width, height);
@@ -161,6 +211,11 @@ namespace PokeBoomz
                 rotation, origin, spriteEffect, zDepth);
             //            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
 
+            foreach (var skill in Skills)
+            {
+                if(this.myTurn)
+                skill.Draw();
+            }
             powerRectangle.Draw();
         }
  
@@ -294,8 +349,7 @@ namespace PokeBoomz
 //                Console.WriteLine(angle);
                 if (angle <= 0) angle = 0;
             }
-
-            Console.WriteLine(angle);
+            
         }
 
         
