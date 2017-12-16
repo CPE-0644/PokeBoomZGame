@@ -527,7 +527,7 @@ namespace PokeBoomz
                         "MAX. CP. :\n     " + Players[2].maxCP,
                         new Vector2(950, 800), Color.White * alpha, textRotation, origin, 3.0f, textEffects, zDepth);
                 }
-                else
+                else if (Players[1].maxCP < Players[2].maxCP)
                 {
                     maxP1.scale = 0.5f;
                     switch (Players[1].maximumCpPokemon.name)
@@ -568,7 +568,7 @@ namespace PokeBoomz
                     }
                     spriteBatch.DrawString(spriteFont,
                         "PLAYER 1 \n   LOSE",
-                        new Vector2(200, 200), Color.Blue * alpha, textRotation, origin, 3.0f, textEffects, zDepth);
+                        new Vector2(200, 200), Color.Red * alpha, textRotation, origin, 3.0f, textEffects, zDepth);
 
                     spriteBatch.DrawString(spriteFont,
                         "MAX. CP. :\n     " + Players[1].maxCP,
@@ -576,12 +576,32 @@ namespace PokeBoomz
 
                     spriteBatch.DrawString(spriteFont,
                         "PLAYER 2 \n    WIN",
-                        new Vector2(950, 200), Color.CornflowerBlue * alpha, textRotation, origin, 3.0f, textEffects,
+                        new Vector2(950, 200), Color.Blue * alpha, textRotation, origin, 3.0f, textEffects,
                         zDepth);
 
                     spriteBatch.DrawString(spriteFont,
                         "MAX. CP. :\n     " + Players[2].maxCP,
                         new Vector2(950, 800), Color.White * alpha, textRotation, origin, 3.0f, textEffects, zDepth);
+                }
+                else
+                {
+                    spriteBatch.DrawString(spriteFont,
+                        "PLAYER 1 \n   DRAW",
+                        new Vector2(200, 200), Color.LightGreen * alpha, textRotation, origin, 3.0f, textEffects, zDepth);
+
+                    spriteBatch.DrawString(spriteFont,
+                        "MAX. CP. :\n     " + Players[1].maxCP,
+                        new Vector2(200, 800), Color.White * alpha, textRotation, origin, 3.0f, textEffects, zDepth);
+
+                    spriteBatch.DrawString(spriteFont,
+                        "PLAYER 2 \n    DRAW",
+                        new Vector2(950, 200), Color.LightGreen * alpha, textRotation, origin, 3.0f, textEffects,
+                        zDepth);
+
+                    spriteBatch.DrawString(spriteFont,
+                        "MAX. CP. :\n     " + Players[2].maxCP,
+                        new Vector2(950, 800), Color.White * alpha, textRotation, origin, 3.0f, textEffects, zDepth);
+
                 }
 
                 if (maxP1 != null && maxP1.texture != null && maxP1.drawRec != null && maxP1.position != null)
